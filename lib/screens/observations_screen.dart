@@ -35,7 +35,8 @@ class _ObservationsScreenState extends ConsumerState<ObservationsScreen> {
     });
 
     try {
-      final observations = await ApiService.getObservationsByChild(widget.childId);
+      final observations =
+          await ApiService.getObservationsByChild(widget.childId);
       setState(() {
         _observations = observations;
         _isLoading = false;
@@ -148,10 +149,10 @@ class _ObservationsScreenState extends ConsumerState<ObservationsScreen> {
                     antecedents: antecedentsController.text,
                     observer: observerController.text,
                   );
-                  
+
                   Navigator.of(context).pop();
                   _loadObservations();
-                  
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Observation ajoutée avec succès'),
@@ -225,9 +226,10 @@ class _ObservationsScreenState extends ConsumerState<ObservationsScreen> {
                         SizedBox(height: 8),
                         Text(
                           'Ajoutez la première observation pour cet enfant',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 24),
@@ -273,14 +275,17 @@ class _ObservationsScreenState extends ConsumerState<ObservationsScreen> {
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _getSeverityColor(observation.severity).withOpacity(0.2),
+                                      color: _getSeverityColor(
+                                              observation.severity)
+                                          .withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       observation.severity,
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: _getSeverityColor(observation.severity),
+                                        color: _getSeverityColor(
+                                            observation.severity),
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -363,4 +368,3 @@ class _ObservationsScreenState extends ConsumerState<ObservationsScreen> {
     }
   }
 }
-

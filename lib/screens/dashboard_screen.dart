@@ -37,12 +37,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       // Récupérer le type d'utilisateur depuis SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final userType = prefs.getString('userType');
-      
+
       setState(() {
         _userType = userType;
       });
-      
-      final children = await ApiService.getAuthorizedChildren(userType: userType);
+
+      final children =
+          await ApiService.getAuthorizedChildren(userType: userType);
       setState(() {
         _children = children;
         _isLoading = false;
@@ -167,17 +168,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 SizedBox(height: 24),
                                 Text(
                                   'Aucun enfant autorisé',
-                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[700],
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey[700],
+                                      ),
                                 ),
                                 SizedBox(height: 12),
                                 Text(
                                   'Contactez un parent pour obtenir l\'autorisation d\'accès aux observations.',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Colors.grey[600],
+                                      ),
                                   textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: 24),
@@ -186,7 +193,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   icon: Icon(Icons.refresh),
                                   label: Text('Actualiser'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).primaryColor,
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 24,
@@ -221,7 +229,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.3),
                                 spreadRadius: 2,
                                 blurRadius: 8,
                                 offset: Offset(0, 4),
@@ -265,13 +275,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.psychology, color: Colors.white, size: 20),
-                                        onPressed: () => context.go('/ai-analysis'),
+                                        icon: Icon(Icons.psychology,
+                                            color: Colors.white, size: 20),
+                                        onPressed: () =>
+                                            context.go('/ai-analysis'),
                                         tooltip: 'Analyse IA',
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.auto_stories, color: Colors.white, size: 20),
-                                        onPressed: () => context.go('/social-scenarios'),
+                                        icon: Icon(Icons.auto_stories,
+                                            color: Colors.white, size: 20),
+                                        onPressed: () =>
+                                            context.go('/social-scenarios'),
                                         tooltip: 'Scénarios Sociaux',
                                       ),
                                     ],
@@ -281,7 +295,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ],
                           ),
                         ),
-                        
+
                         // Liste des enfants
                         Expanded(
                           child: ListView.builder(
@@ -313,15 +327,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               gradient: LinearGradient(
                                                 colors: [
                                                   _getAgeColor(child.age),
-                                                  _getAgeColor(child.age).withOpacity(0.7),
+                                                  _getAgeColor(child.age)
+                                                      .withOpacity(0.7),
                                                 ],
                                                 begin: Alignment.topLeft,
                                                 end: Alignment.bottomRight,
                                               ),
-                                              borderRadius: BorderRadius.circular(30),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: _getAgeColor(child.age).withOpacity(0.3),
+                                                  color: _getAgeColor(child.age)
+                                                      .withOpacity(0.3),
                                                   spreadRadius: 2,
                                                   blurRadius: 8,
                                                   offset: Offset(0, 2),
@@ -339,13 +356,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               ),
                                             ),
                                           ),
-                                          
+
                                           SizedBox(width: 16),
-                                          
+
                                           // Informations
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   child.name,
@@ -370,10 +388,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                     vertical: 4,
                                                   ),
                                                   decoration: BoxDecoration(
-                                                    color: _getAgeColor(child.age).withOpacity(0.1),
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    color:
+                                                        _getAgeColor(child.age)
+                                                            .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
                                                     border: Border.all(
-                                                      color: _getAgeColor(child.age).withOpacity(0.3),
+                                                      color: _getAgeColor(
+                                                              child.age)
+                                                          .withOpacity(0.3),
                                                       width: 1,
                                                     ),
                                                   ),
@@ -381,26 +405,35 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                     child.ageCategory,
                                                     style: TextStyle(
                                                       fontSize: 12,
-                                                      color: _getAgeColor(child.age),
-                                                      fontWeight: FontWeight.w600,
+                                                      color: _getAgeColor(
+                                                          child.age),
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          
+
                                           // Boutons d'action
                                           Column(
                                             children: [
                                               IconButton(
-                                                icon: Icon(Icons.psychology, color: Colors.blue, size: 20),
-                                                onPressed: () => context.go('/ai-analysis/${child.id}'),
+                                                icon: Icon(Icons.psychology,
+                                                    color: Colors.blue,
+                                                    size: 20),
+                                                onPressed: () => context.go(
+                                                    '/ai-analysis/${child.id}'),
                                                 tooltip: 'Analyse IA',
                                               ),
                                               IconButton(
-                                                icon: Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
-                                                onPressed: () => context.go('/observations/${child.id}'),
+                                                icon: Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    color: Colors.grey[400],
+                                                    size: 16),
+                                                onPressed: () => context.go(
+                                                    '/observations/${child.id}'),
                                                 tooltip: 'Voir observations',
                                               ),
                                             ],
@@ -432,4 +465,3 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Colors.orange;
   }
 }
-

@@ -29,7 +29,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
     final userType = prefs.getString('userType');
-    
+
     setState(() {
       _userType = userType;
     });
@@ -45,7 +45,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     try {
       final types = await SubscriptionService.getAvailableSubscriptionTypes();
       final current = await SubscriptionService.getCurrentSubscription();
-      
+
       setState(() {
         _subscriptionTypes = types;
         _currentSubscription = current;
@@ -106,8 +106,17 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => context.go('/dashboard'),
@@ -120,8 +129,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
-              Colors.white,
+              Color(0xFF667eea),
+              Color(0xFF764ba2),
+              Color(0xFFf093fb),
             ],
           ),
         ),
@@ -218,7 +228,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               SizedBox(height: 24),
 
               // Liste des plans d'abonnement
-              ..._subscriptionTypes.map((type) => _buildSubscriptionCard(type)).toList(),
+              ..._subscriptionTypes
+                  .map((type) => _buildSubscriptionCard(type))
+                  .toList(),
             ],
           ),
         ),
@@ -229,21 +241,21 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   Widget _buildSubscriptionCard(SubscriptionType type) {
     final isCurrentPlan = _currentSubscription?['type'] == type.name;
     final isPopular = type.name == 'PREMIUM';
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       child: Card(
         elevation: isPopular ? 8 : 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: isPopular 
+          side: isPopular
               ? BorderSide(color: Theme.of(context).primaryColor, width: 2)
               : BorderSide.none,
         ),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            gradient: isPopular 
+            gradient: isPopular
                 ? LinearGradient(
                     colors: [
                       Theme.of(context).primaryColor.withOpacity(0.1),
@@ -279,7 +291,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               if (isPopular) ...[
                                 SizedBox(width: 8),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
                                     borderRadius: BorderRadius.circular(12),
@@ -297,7 +310,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               if (isCurrentPlan) ...[
                                 SizedBox(width: 8),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Colors.green,
                                     borderRadius: BorderRadius.circular(12),
@@ -329,7 +343,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          type.isFree ? 'Gratuit' : '${type.price.toStringAsFixed(2)}€',
+                          type.isFree
+                              ? 'Gratuit'
+                              : '${type.price.toStringAsFixed(2)}€',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -348,9 +364,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                     ),
                   ],
                 ),
-                
+
                 SizedBox(height: 16),
-                
+
                 // Fonctionnalités
                 Text(
                   'Fonctionnalités incluses:',
@@ -361,53 +377,55 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   ),
                 ),
                 SizedBox(height: 8),
-                ...type.features.map((feature) => Padding(
-                  padding: EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 16,
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          feature,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                ...type.features
+                    .map((feature) => Padding(
+                          padding: EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 16,
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  feature,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )).toList(),
-                
+                        ))
+                    .toList(),
+
                 SizedBox(height: 20),
-                
+
                 // Bouton d'action
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: isCurrentPlan ? null : () => _showSubscribeDialog(type),
+                    onPressed:
+                        isCurrentPlan ? null : () => _showSubscribeDialog(type),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isCurrentPlan 
-                          ? Colors.grey[300] 
+                      backgroundColor: isCurrentPlan
+                          ? Colors.grey[300]
                           : Theme.of(context).primaryColor,
-                      foregroundColor: isCurrentPlan 
-                          ? Colors.grey[600] 
-                          : Colors.white,
+                      foregroundColor:
+                          isCurrentPlan ? Colors.grey[600] : Colors.white,
                       padding: EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: Text(
-                      isCurrentPlan 
-                          ? 'Plan Actuel' 
-                          : type.isFree 
-                              ? 'Continuer Gratuitement' 
+                      isCurrentPlan
+                          ? 'Plan Actuel'
+                          : type.isFree
+                              ? 'Continuer Gratuitement'
                               : 'S\'abonner',
                       style: TextStyle(
                         fontSize: 16,
@@ -444,7 +462,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               ),
             ),
             SizedBox(height: 8),
-            Text('Prix: ${type.isFree ? 'Gratuit' : '${type.price.toStringAsFixed(2)}€/mois'}'),
+            Text(
+                'Prix: ${type.isFree ? 'Gratuit' : '${type.price.toStringAsFixed(2)}€/mois'}'),
             SizedBox(height: 16),
             Text('Voulez-vous continuer?'),
           ],
@@ -501,5 +520,3 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     }
   }
 }
-
-

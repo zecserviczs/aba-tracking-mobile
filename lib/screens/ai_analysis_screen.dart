@@ -52,8 +52,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
       // Récupérer le type d'utilisateur depuis SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final userType = prefs.getString('userType');
-      
-      final children = await ApiService.getAuthorizedChildren(userType: userType);
+
+      final children =
+          await ApiService.getAuthorizedChildren(userType: userType);
       setState(() {
         _children = children;
       });
@@ -104,10 +105,19 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
             fontSize: 20,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => context.go('/dashboard'),
@@ -118,20 +128,23 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
               icon: Icon(Icons.picture_as_pdf),
               onPressed: _generatePDFReport,
               tooltip: 'Générer rapport PDF',
+              color: Colors.white,
             ),
         ],
-        bottom: _selectedChildId != null ? TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          tabs: [
-            Tab(icon: Icon(Icons.analytics), text: 'Analyse'),
-            Tab(icon: Icon(Icons.lightbulb), text: 'Recommandations'),
-            Tab(icon: Icon(Icons.trending_up), text: 'Prédictions'),
-            Tab(icon: Icon(Icons.pattern), text: 'Patterns'),
-          ],
-        ) : null,
+        bottom: _selectedChildId != null
+            ? TabBar(
+                controller: _tabController,
+                indicatorColor: Colors.white,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white70,
+                tabs: [
+                  Tab(icon: Icon(Icons.analytics), text: 'Analyse'),
+                  Tab(icon: Icon(Icons.lightbulb), text: 'Recommandations'),
+                  Tab(icon: Icon(Icons.trending_up), text: 'Prédictions'),
+                  Tab(icon: Icon(Icons.pattern), text: 'Patterns'),
+                ],
+              )
+            : null,
       ),
       drawer: AppDrawer(),
       body: Container(
@@ -140,8 +153,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
-              Colors.white,
+              Color(0xFF667eea),
+              Color(0xFF764ba2),
+              Color(0xFFf093fb),
             ],
           ),
         ),
@@ -186,7 +200,8 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                         ),
                         SizedBox(height: 8),
                         Text(
-                          _analysisReport?.childName ?? 'Sélectionnez un enfant',
+                          _analysisReport?.childName ??
+                              'Sélectionnez un enfant',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.9),
                             fontSize: 14,
@@ -203,7 +218,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                 ],
               ),
             ),
-            
+
             // Sélection d'enfant si aucun enfant n'est sélectionné
             if (_selectedChildId == null) ...[
               Container(
@@ -235,39 +250,43 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                         ),
                       )
                     else
-                      ..._children.map((child) => Container(
-                        margin: EdgeInsets.only(bottom: 8),
-                        child: Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              child: Text(
-                                child.name[0].toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                      ..._children
+                          .map((child) => Container(
+                                margin: EdgeInsets.only(bottom: 8),
+                                child: Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      child: Text(
+                                        child.name[0].toUpperCase(),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      child.name,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text('${child.age} ans'),
+                                    trailing: Icon(Icons.arrow_forward_ios),
+                                    onTap: () => _selectChild(child.id),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: Text(
-                              child.name,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text('${child.age} ans'),
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            onTap: () => _selectChild(child.id),
-                          ),
-                        ),
-                      )).toList(),
+                              ))
+                          .toList(),
                   ],
                 ),
               ),
             ],
-            
+
             // Contenu des onglets (seulement si un enfant est sélectionné)
             if (_selectedChildId != null)
               Expanded(
@@ -377,7 +396,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
     }
 
     final analysis = _analysisReport!.analysis;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -420,9 +439,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
               ),
             ),
           ),
-          
+
           SizedBox(height: 16),
-          
+
           // Niveau de risque
           Card(
             elevation: 4,
@@ -475,9 +494,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
               ),
             ),
           ),
-          
+
           SizedBox(height: 16),
-          
+
           // Principales découvertes
           Card(
             elevation: 4,
@@ -507,33 +526,35 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                     ],
                   ),
                   SizedBox(height: 12),
-                  ...analysis.keyFindings.map((finding) => Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 16,
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            finding,
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
+                  ...analysis.keyFindings
+                      .map((finding) => Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    finding,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
                 ],
               ),
             ),
           ),
-          
+
           SizedBox(height: 16),
-          
+
           // Déclencheurs identifiés
           if (analysis.triggers.isNotEmpty) ...[
             Card(
@@ -564,26 +585,28 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                       ],
                     ),
                     SizedBox(height: 12),
-                    ...analysis.triggers.map((trigger) => Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.warning_amber,
-                            color: Colors.orange,
-                            size: 16,
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              trigger,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )).toList(),
+                    ...analysis.triggers
+                        .map((trigger) => Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.warning_amber,
+                                    color: Colors.orange,
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      trigger,
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                        .toList(),
                   ],
                 ),
               ),
@@ -602,7 +625,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
     }
 
     final recommendations = _analysisReport!.recommendations;
-    
+
     return ListView.builder(
       padding: EdgeInsets.all(16),
       itemCount: recommendations.length,
@@ -658,7 +681,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -743,7 +768,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
     }
 
     final prediction = _analysisReport!.prediction;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -803,9 +828,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
               ),
             ),
           ),
-          
+
           SizedBox(height: 16),
-          
+
           // Comportements prédits
           Card(
             elevation: 4,
@@ -835,32 +860,34 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                     ],
                   ),
                   SizedBox(height: 12),
-                  ...prediction.predictedBehaviors.map((behavior) => Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.blue,
-                          size: 16,
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            behavior,
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
+                  ...prediction.predictedBehaviors
+                      .map((behavior) => Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.blue,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    behavior,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
                 ],
               ),
             ),
           ),
-          
+
           SizedBox(height: 16),
-          
+
           // Recommandations prédictives
           Card(
             elevation: 4,
@@ -890,26 +917,28 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                     ],
                   ),
                   SizedBox(height: 12),
-                  ...prediction.recommendations.map((rec) => Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            rec,
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
+                  ...prediction.recommendations
+                      .map((rec) => Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.check_circle_outline,
+                                  color: Colors.amber,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    rec,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
                 ],
               ),
             ),
@@ -927,7 +956,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
     }
 
     final patterns = _analysisReport!.patterns;
-    
+
     return ListView.builder(
       padding: EdgeInsets.all(16),
       itemCount: patterns.length,
@@ -993,7 +1022,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                     ],
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Fréquence
                   Row(
                     children: [
@@ -1014,16 +1043,17 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                         child: LinearProgressIndicator(
                           value: pattern.frequency,
                           backgroundColor: Colors.grey[300],
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.purple),
                         ),
                       ),
                       SizedBox(width: 8),
                       Text('${(pattern.frequency * 100).toInt()}%'),
                     ],
                   ),
-                  
+
                   SizedBox(height: 12),
-                  
+
                   // Horaires
                   Row(
                     children: [
@@ -1050,7 +1080,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                       ),
                     ],
                   ),
-                  
+
                   if (pattern.associatedBehaviors.isNotEmpty) ...[
                     SizedBox(height: 12),
                     Text(
@@ -1183,7 +1213,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                 ),
               ),
               pw.SizedBox(height: 20),
-              
+
               // Résumé
               pw.Text(
                 'Résumé de l\'analyse',
@@ -1198,7 +1228,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                 style: pw.TextStyle(fontSize: 14),
               ),
               pw.SizedBox(height: 20),
-              
+
               // Niveau de risque
               pw.Text(
                 'Niveau de risque: ${_analysisReport!.analysis.riskLevel}',
@@ -1208,7 +1238,7 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                 ),
               ),
               pw.SizedBox(height: 20),
-              
+
               // Principales découvertes
               pw.Text(
                 'Principales découvertes',
@@ -1227,9 +1257,9 @@ class _AIAnalysisScreenState extends ConsumerState<AIAnalysisScreen>
                   ),
                 );
               }).toList(),
-              
+
               pw.SizedBox(height: 20),
-              
+
               // Recommandations
               pw.Text(
                 'Recommandations',

@@ -10,10 +10,11 @@ class AdminUsersScreen extends StatefulWidget {
   State<AdminUsersScreen> createState() => _AdminUsersScreenState();
 }
 
-class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerProviderStateMixin {
+class _AdminUsersScreenState extends State<AdminUsersScreen>
+    with SingleTickerProviderStateMixin {
   final AdminService _adminService = AdminService();
   late TabController _tabController;
-  
+
   List<AdminUser> _allUsers = [];
   List<AdminUser> _parents = [];
   List<AdminUser> _professionals = [];
@@ -160,9 +161,11 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
   Widget _buildUsersList(List<AdminUser> users) {
     final filteredUsers = _searchTerm.isEmpty
         ? users
-        : users.where((user) =>
-            user.email.toLowerCase().contains(_searchTerm.toLowerCase()) ||
-            user.username.toLowerCase().contains(_searchTerm.toLowerCase())).toList();
+        : users
+            .where((user) =>
+                user.email.toLowerCase().contains(_searchTerm.toLowerCase()) ||
+                user.username.toLowerCase().contains(_searchTerm.toLowerCase()))
+            .toList();
 
     if (filteredUsers.isEmpty) {
       return Center(
@@ -172,7 +175,9 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
             Icon(Icons.people_outline, size: 64.sp, color: Colors.grey),
             SizedBox(height: 16.h),
             Text(
-              _searchTerm.isEmpty ? 'Aucun utilisateur trouvé' : 'Aucun résultat pour "$_searchTerm"',
+              _searchTerm.isEmpty
+                  ? 'Aucun utilisateur trouvé'
+                  : 'Aucun résultat pour "$_searchTerm"',
               style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
             ),
           ],
@@ -216,14 +221,17 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
             SizedBox(height: 4.h),
             Wrap(
               spacing: 4.w,
-              children: user.roles.map((role) => Chip(
-                label: Text(
-                  role,
-                  style: TextStyle(fontSize: 10.sp, color: Colors.white),
-                ),
-                backgroundColor: _getRoleColor(role),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              )).toList(),
+              children: user.roles
+                  .map((role) => Chip(
+                        label: Text(
+                          role,
+                          style:
+                              TextStyle(fontSize: 10.sp, color: Colors.white),
+                        ),
+                        backgroundColor: _getRoleColor(role),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ))
+                  .toList(),
             ),
           ],
         ),
@@ -305,7 +313,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Confirmer l\'action'),
-        content: Text('Êtes-vous sûr de vouloir ${_getActionText(action)} ${user.username} ?'),
+        content: Text(
+            'Êtes-vous sûr de vouloir ${_getActionText(action)} ${user.username} ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -356,11 +365,16 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
     try {
       final request = UserManagementRequest(
         email: user.email,
-        isActive: action == 'activate' ? true : action == 'deactivate' ? false : null,
+        isActive: action == 'activate'
+            ? true
+            : action == 'deactivate'
+                ? false
+                : null,
       );
 
-      final message = await _adminService.manageUser(user.email, action, request);
-      
+      final message =
+          await _adminService.manageUser(user.email, action, request);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -395,7 +409,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
             _buildDetailRow('Nom d\'utilisateur', user.username),
             _buildDetailRow('Type', user.userType),
             _buildDetailRow('Rôles', user.roles.join(', ')),
-            _buildDetailRow('Statut', user.isActive == true ? 'Actif' : 'Inactif'),
+            _buildDetailRow(
+                'Statut', user.isActive == true ? 'Actif' : 'Inactif'),
           ],
         ),
         actions: [
@@ -432,5 +447,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> with SingleTickerPr
     );
   }
 }
+
+
 
 

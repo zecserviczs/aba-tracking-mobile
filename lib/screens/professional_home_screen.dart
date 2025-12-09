@@ -10,10 +10,12 @@ class ProfessionalHomeScreen extends ConsumerStatefulWidget {
   const ProfessionalHomeScreen({super.key});
 
   @override
-  ConsumerState<ProfessionalHomeScreen> createState() => _ProfessionalHomeScreenState();
+  ConsumerState<ProfessionalHomeScreen> createState() =>
+      _ProfessionalHomeScreenState();
 }
 
-class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen> {
+class _ProfessionalHomeScreenState
+    extends ConsumerState<ProfessionalHomeScreen> {
   List<Child> _children = [];
   bool _isLoading = true;
   String? _error;
@@ -26,7 +28,8 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
 
   Future<void> _loadAuthorizedChildren() async {
     try {
-      final children = await ApiService.getAuthorizedChildren(userType: 'professional');
+      final children =
+          await ApiService.getAuthorizedChildren(userType: 'professional');
       setState(() {
         _children = children;
         _isLoading = false;
@@ -79,11 +82,13 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                        Icon(Icons.error_outline,
+                            size: 64, color: Colors.red[300]),
                         SizedBox(height: 16),
                         Text(
                           'Erreur de chargement',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 8),
                         Text(_error!, textAlign: TextAlign.center),
@@ -137,7 +142,8 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                                   SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Bienvenue, Professionnel',
@@ -151,7 +157,8 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                                         Text(
                                           'Gérez vos patients et créez des scénarios sociaux',
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color:
+                                                Colors.white.withOpacity(0.9),
                                             fontSize: 14,
                                           ),
                                         ),
@@ -163,9 +170,9 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                             ],
                           ),
                         ),
-                        
+
                         SizedBox(height: 24),
-                        
+
                         // Actions rapides
                         Text(
                           'Actions Rapides',
@@ -176,7 +183,7 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                           ),
                         ),
                         SizedBox(height: 16),
-                        
+
                         Row(
                           children: [
                             Expanded(
@@ -200,9 +207,9 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                             ),
                           ],
                         ),
-                        
+
                         SizedBox(height: 24),
-                        
+
                         // Liste des enfants
                         Text(
                           'Mes Patients (${_children.length})',
@@ -213,7 +220,7 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                           ),
                         ),
                         SizedBox(height: 16),
-                        
+
                         if (_children.isEmpty)
                           Container(
                             width: double.infinity,
@@ -249,38 +256,44 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
                             ),
                           )
                         else
-                          ..._children.map((child) => Container(
-                            margin: EdgeInsets.only(bottom: 12),
-                            child: Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.green[600],
-                                  child: Text(
-                                    child.name[0].toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                          ..._children
+                              .map((child) => Container(
+                                    margin: EdgeInsets.only(bottom: 12),
+                                    child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: Colors.green[600],
+                                          child: Text(
+                                            child.name[0].toUpperCase(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        title: Text(
+                                          child.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        subtitle: Text('${child.age} ans'),
+                                        trailing: IconButton(
+                                          icon: Icon(Icons.visibility,
+                                              color: Colors.green[600]),
+                                          onPressed: () => context
+                                              .go('/observations/${child.id}'),
+                                          tooltip: 'Voir les observations',
+                                        ),
+                                        onTap: () => context
+                                            .go('/observations/${child.id}'),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                title: Text(
-                                  child.name,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text('${child.age} ans'),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.visibility, color: Colors.green[600]),
-                                  onPressed: () => context.go('/observations/${child.id}'),
-                                  tooltip: 'Voir les observations',
-                                ),
-                                onTap: () => context.go('/observations/${child.id}'),
-                              ),
-                            ),
-                          )).toList(),
+                                  ))
+                              .toList(),
                       ],
                     ),
                   ),
@@ -408,5 +421,7 @@ class _ProfessionalHomeScreenState extends ConsumerState<ProfessionalHomeScreen>
     );
   }
 }
+
+
 
 

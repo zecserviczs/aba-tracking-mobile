@@ -31,11 +31,13 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
   Future<void> _loadData() async {
     try {
       setState(() => _isLoading = true);
-      
+
       final stats = await ComfortService.getComfortStats(widget.child.id!);
-      final routines = await ComfortService.getActiveChildRoutines(widget.child.id!);
-      final criticalItems = await ComfortService.getCriticalComfortItems(widget.child.id!);
-      
+      final routines =
+          await ComfortService.getActiveChildRoutines(widget.child.id!);
+      final criticalItems =
+          await ComfortService.getCriticalComfortItems(widget.child.id!);
+
       setState(() {
         _stats = stats;
         _recentRoutines = routines.take(3).toList();
@@ -52,6 +54,12 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/parent-dashboard');
+          },
+        ),
         title: Text('Confort - ${widget.child.name}'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -71,6 +79,13 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text(
+                      'Suivi des routines et objets de confort de votre enfant. '
+                      'Utilisez les actions rapides pour ajouter une routine ou un élément, '
+                      'consulter les routines du matin/soir ou vérifier le stock.',
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    const SizedBox(height: 16),
                     _buildStatsCards(),
                     const SizedBox(height: 24),
                     _buildQuickActions(),
@@ -150,7 +165,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -190,7 +206,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 'Nouvelle routine',
                 Icons.schedule,
                 Colors.blue,
-                () => context.push('/children/${widget.child.id}/comfort/routines/new'),
+                () => context
+                    .push('/children/${widget.child.id}/comfort/routines/new'),
               ),
             ),
             const SizedBox(width: 12),
@@ -199,7 +216,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 'Nouvel élément',
                 Icons.favorite,
                 Colors.red,
-                () => context.push('/children/${widget.child.id}/comfort/items/new'),
+                () => context
+                    .push('/children/${widget.child.id}/comfort/items/new'),
               ),
             ),
           ],
@@ -212,7 +230,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 'Routines du matin',
                 Icons.wb_sunny,
                 Colors.orange,
-                () => context.push('/children/${widget.child.id}/comfort/routines/morning'),
+                () => context.push(
+                    '/children/${widget.child.id}/comfort/routines/morning'),
               ),
             ),
             const SizedBox(width: 12),
@@ -221,7 +240,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 'Routines du soir',
                 Icons.nights_stay,
                 Colors.indigo,
-                () => context.push('/children/${widget.child.id}/comfort/routines/evening'),
+                () => context.push(
+                    '/children/${widget.child.id}/comfort/routines/evening'),
               ),
             ),
           ],
@@ -252,7 +272,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
     );
   }
 
-  Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionCard(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return Card(
       elevation: 2,
       child: InkWell(
@@ -288,7 +309,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => context.push('/children/${widget.child.id}/comfort/routines'),
+              onPressed: () => context
+                  .push('/children/${widget.child.id}/comfort/routines'),
               child: const Text('Voir tout'),
             ),
           ],
@@ -318,11 +340,13 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
           color: _getRoutineColor(routine.type),
         ),
         title: Text(routine.name),
-        subtitle: Text('${routine.scheduledTime} - ${routine.type.displayName}'),
+        subtitle:
+            Text('${routine.scheduledTime} - ${routine.type.displayName}'),
         trailing: routine.isActive
             ? const Icon(Icons.check_circle, color: Colors.green)
             : const Icon(Icons.cancel, color: Colors.red),
-        onTap: () => context.push('/children/${widget.child.id}/comfort/routines/${routine.id}'),
+        onTap: () => context.push(
+            '/children/${widget.child.id}/comfort/routines/${routine.id}'),
       ),
     );
   }
@@ -339,7 +363,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => context.push('/children/${widget.child.id}/comfort/items'),
+              onPressed: () => context
+                  .push('/children/${widget.child.id}/comfort/items'),
               child: const Text('Voir tout'),
             ),
           ],
@@ -369,13 +394,15 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
           color: item.comfortLevel.color,
         ),
         title: Text(item.name),
-        subtitle: Text('${item.type.displayName} - ${item.comfortLevel.displayName}'),
+        subtitle:
+            Text('${item.type.displayName} - ${item.comfortLevel.displayName}'),
         trailing: item.needsReplacement
             ? const Icon(Icons.warning, color: Colors.orange)
             : item.isAvailable
                 ? const Icon(Icons.check_circle, color: Colors.green)
                 : const Icon(Icons.cancel, color: Colors.red),
-        onTap: () => context.push('/children/${widget.child.id}/comfort/items/${item.id}'),
+        onTap: () => context
+            .push('/children/${widget.child.id}/comfort/items/${item.id}'),
       ),
     );
   }
@@ -393,7 +420,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 title: const Text('Nouvelle routine'),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/children/${widget.child.id}/comfort/routines/new');
+                  context.push(
+                      '/children/${widget.child.id}/comfort/routines/new');
                 },
               ),
               ListTile(
@@ -401,7 +429,8 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
                 title: const Text('Nouvel élément de confort'),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/children/${widget.child.id}/comfort/items/new');
+                  context
+                      .push('/children/${widget.child.id}/comfort/items/new');
                 },
               ),
             ],
@@ -416,7 +445,7 @@ class _ComfortDashboardScreenState extends State<ComfortDashboardScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Statistiques de confort'),
-        content: _stats != null 
+        content: _stats != null
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -16,7 +16,8 @@ class StockChecklistsScreen extends StatefulWidget {
   State<StockChecklistsScreen> createState() => _StockChecklistsScreenState();
 }
 
-class _StockChecklistsScreenState extends State<StockChecklistsScreen> with TickerProviderStateMixin {
+class _StockChecklistsScreenState extends State<StockChecklistsScreen>
+    with TickerProviderStateMixin {
   List<StockChecklist> _checklists = [];
   bool _isLoading = true;
   late TabController _tabController;
@@ -37,7 +38,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
   Future<void> _loadChecklists() async {
     try {
       setState(() => _isLoading = true);
-      final checklists = await StockService.getChildStockChecklists(widget.child.id!);
+      final checklists =
+          await StockService.getChildStockChecklists(widget.child.id!);
       setState(() {
         _checklists = checklists;
         _isLoading = false;
@@ -84,7 +86,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/new'),
+        onPressed: () =>
+            context.push('/children/${widget.child.id}/stock/checklists/new'),
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -129,7 +132,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            ...activeChecklists.map((checklist) => _buildChecklistCard(checklist)),
+            ...activeChecklists
+                .map((checklist) => _buildChecklistCard(checklist)),
             const SizedBox(height: 24),
           ],
           if (inactiveChecklists.isNotEmpty) ...[
@@ -138,7 +142,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            ...inactiveChecklists.map((checklist) => _buildChecklistCard(checklist)),
+            ...inactiveChecklists
+                .map((checklist) => _buildChecklistCard(checklist)),
           ],
         ],
       ),
@@ -169,14 +174,15 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: activeChecklists.length,
-        itemBuilder: (context, index) => _buildChecklistCard(activeChecklists[index]),
+        itemBuilder: (context, index) =>
+            _buildChecklistCard(activeChecklists[index]),
       ),
     );
   }
 
   Widget _buildByTypeTab() {
     final groupedChecklists = <ChecklistType, List<StockChecklist>>{};
-    
+
     for (final checklist in _checklists.where((c) => c.isActive)) {
       groupedChecklists.putIfAbsent(checklist.type, () => []).add(checklist);
     }
@@ -198,7 +204,7 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
         itemBuilder: (context, index) {
           final type = groupedChecklists.keys.elementAt(index);
           final checklists = groupedChecklists[type]!;
-          
+
           return Card(
             margin: const EdgeInsets.only(bottom: 16),
             child: ExpansionTile(
@@ -208,7 +214,9 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
               ),
               title: Text(type.displayName),
               subtitle: Text('${checklists.length} checklist(s)'),
-              children: checklists.map((checklist) => _buildChecklistTile(checklist)).toList(),
+              children: checklists
+                  .map((checklist) => _buildChecklistTile(checklist))
+                  .toList(),
             ),
           );
         },
@@ -217,9 +225,9 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
   }
 
   Widget _buildChecklistCard(StockChecklist checklist) {
-    final isOverdue = checklist.nextScheduled != null && 
-                     checklist.nextScheduled!.isBefore(DateTime.now()) && 
-                     !checklist.isCompleted;
+    final isOverdue = checklist.nextScheduled != null &&
+        checklist.nextScheduled!.isBefore(DateTime.now()) &&
+        !checklist.isCompleted;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -264,9 +272,10 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
                   Text(
                     'Prochaine: ${_formatDateTime(checklist.nextScheduled!)}',
                     style: TextStyle(
-                      color: isOverdue ? Colors.red : Colors.grey[600], 
+                      color: isOverdue ? Colors.red : Colors.grey[600],
                       fontSize: 12,
-                      fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
+                      fontWeight:
+                          isOverdue ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                 ],
@@ -290,7 +299,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
             ),
             IconButton(
               icon: const Icon(Icons.edit, color: Colors.blue),
-              onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}/edit'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/stock/checklists/${checklist.id}/edit'),
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
@@ -298,7 +308,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
             ),
           ],
         ),
-        onTap: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}'),
+        onTap: () => context.push(
+            '/children/${widget.child.id}/stock/checklists/${checklist.id}'),
       ),
     );
   }
@@ -306,16 +317,21 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
   Widget _buildChecklistTile(StockChecklist checklist) {
     return ListTile(
       leading: Icon(
-        checklist.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+        checklist.isCompleted
+            ? Icons.check_circle
+            : Icons.radio_button_unchecked,
         color: checklist.isCompleted ? Colors.green : Colors.grey,
       ),
       title: Text(checklist.name),
-      subtitle: Text('${checklist.scheduledTime} - ${_getFrequencyDisplayName(checklist.frequency)}'),
+      subtitle: Text(
+          '${checklist.scheduledTime} - ${_getFrequencyDisplayName(checklist.frequency)}'),
       trailing: IconButton(
         icon: const Icon(Icons.visibility),
-        onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}'),
+        onPressed: () => context.push(
+            '/children/${widget.child.id}/stock/checklists/${checklist.id}'),
       ),
-      onTap: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}'),
+      onTap: () => context.push(
+          '/children/${widget.child.id}/stock/checklists/${checklist.id}'),
     );
   }
 
@@ -324,10 +340,7 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
       await StockService.toggleStockChecklist(checklist.id!);
       _loadChecklists();
       _showSuccessSnackBar(
-        checklist.isActive 
-            ? 'Checklist désactivée' 
-            : 'Checklist activée'
-      );
+          checklist.isActive ? 'Checklist désactivée' : 'Checklist activée');
     } catch (e) {
       _showErrorSnackBar('Erreur lors du changement d\'état: $e');
     }
@@ -338,7 +351,8 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Supprimer la checklist'),
-        content: Text('Êtes-vous sûr de vouloir supprimer la checklist "${checklist.name}" ?'),
+        content: Text(
+            'Êtes-vous sûr de vouloir supprimer la checklist "${checklist.name}" ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -384,10 +398,14 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
 
   String _getFrequencyDisplayName(String frequency) {
     switch (frequency) {
-      case 'DAILY': return 'Quotidien';
-      case 'WEEKLY': return 'Hebdomadaire';
-      case 'MONTHLY': return 'Mensuel';
-      default: return frequency;
+      case 'DAILY':
+        return 'Quotidien';
+      case 'WEEKLY':
+        return 'Hebdomadaire';
+      case 'MONTHLY':
+        return 'Mensuel';
+      default:
+        return frequency;
     }
   }
 
@@ -395,4 +413,7 @@ class _StockChecklistsScreenState extends State<StockChecklistsScreen> with Tick
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} à ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }
+
+
+
 

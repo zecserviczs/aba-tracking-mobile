@@ -16,7 +16,8 @@ class ComfortItemsScreen extends StatefulWidget {
   State<ComfortItemsScreen> createState() => _ComfortItemsScreenState();
 }
 
-class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProviderStateMixin {
+class _ComfortItemsScreenState extends State<ComfortItemsScreen>
+    with TickerProviderStateMixin {
   List<ComfortItem> _items = [];
   List<ComfortCategory> _categories = [];
   bool _isLoading = true;
@@ -57,7 +58,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
 
   List<ComfortItem> get _filteredItems {
     return _items.where((item) {
-      if (_searchQuery.isNotEmpty && !item.name.toLowerCase().contains(_searchQuery.toLowerCase())) {
+      if (_searchQuery.isNotEmpty &&
+          !item.name.toLowerCase().contains(_searchQuery.toLowerCase())) {
         return false;
       }
       if (_selectedType != null && item.type != _selectedType) {
@@ -77,6 +79,10 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/children/${widget.child.id}/comfort'),
+        ),
         title: Text('Éléments de confort - ${widget.child.name}'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -109,7 +115,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/children/${widget.child.id}/comfort/items/new'),
+        onPressed: () =>
+            context.push('/children/${widget.child.id}/comfort/items/new'),
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -150,7 +157,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: filteredItems.length,
-              itemBuilder: (context, index) => _buildComfortItemCard(filteredItems[index]),
+              itemBuilder: (context, index) =>
+                  _buildComfortItemCard(filteredItems[index]),
             ),
           ),
         ),
@@ -159,10 +167,11 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
   }
 
   Widget _buildCriticalItemsTab() {
-    final criticalItems = _items.where((item) => 
-      item.comfortLevel == ComfortLevel.CRITICAL || 
-      item.comfortLevel == ComfortLevel.HIGH
-    ).toList();
+    final criticalItems = _items
+        .where((item) =>
+            item.comfortLevel == ComfortLevel.CRITICAL ||
+            item.comfortLevel == ComfortLevel.HIGH)
+        .toList();
 
     if (criticalItems.isEmpty) {
       return const Center(
@@ -190,7 +199,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: criticalItems.length,
-        itemBuilder: (context, index) => _buildComfortItemCard(criticalItems[index]),
+        itemBuilder: (context, index) =>
+            _buildComfortItemCard(criticalItems[index]),
       ),
     );
   }
@@ -242,7 +252,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Type d\'élément', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Type d\'élément',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -255,12 +266,12 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
               },
             ),
             ...ComfortItemType.values.map((type) => FilterChip(
-              label: Text(type.displayName),
-              selected: _selectedType == type,
-              onSelected: (selected) {
-                setState(() => _selectedType = selected ? type : null);
-              },
-            )),
+                  label: Text(type.displayName),
+                  selected: _selectedType == type,
+                  onSelected: (selected) {
+                    setState(() => _selectedType = selected ? type : null);
+                  },
+                )),
           ],
         ),
       ],
@@ -284,12 +295,13 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
               },
             ),
             ..._categories.map((category) => FilterChip(
-              label: Text(category.name),
-              selected: _selectedCategory == category.id,
-              onSelected: (selected) {
-                setState(() => _selectedCategory = selected ? category.id : null);
-              },
-            )),
+                  label: Text(category.name),
+                  selected: _selectedCategory == category.id,
+                  onSelected: (selected) {
+                    setState(() =>
+                        _selectedCategory = selected ? category.id : null);
+                  },
+                )),
           ],
         ),
       ],
@@ -300,7 +312,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Niveau d\'importance', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Niveau d\'importance',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -313,13 +326,13 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
               },
             ),
             ...ComfortLevel.values.map((level) => FilterChip(
-              label: Text(level.displayName),
-              selected: _selectedLevel == level,
-              onSelected: (selected) {
-                setState(() => _selectedLevel = selected ? level : null);
-              },
-              selectedColor: level.color.withOpacity(0.3),
-            )),
+                  label: Text(level.displayName),
+                  selected: _selectedLevel == level,
+                  onSelected: (selected) {
+                    setState(() => _selectedLevel = selected ? level : null);
+                  },
+                  selectedColor: level.color.withOpacity(0.3),
+                )),
           ],
         ),
       ],
@@ -404,7 +417,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
             ),
             IconButton(
               icon: const Icon(Icons.edit, color: Colors.blue),
-              onPressed: () => context.push('/children/${widget.child.id}/comfort/items/${item.id}/edit'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/comfort/items/${item.id}/edit'),
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
@@ -412,7 +426,8 @@ class _ComfortItemsScreenState extends State<ComfortItemsScreen> with TickerProv
             ),
           ],
         ),
-        onTap: () => context.push('/children/${widget.child.id}/comfort/items/${item.id}'),
+        onTap: () => context
+            .push('/children/${widget.child.id}/comfort/items/${item.id}'),
       ),
     );
   }

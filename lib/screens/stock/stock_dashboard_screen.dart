@@ -32,12 +32,14 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
   Future<void> _loadData() async {
     try {
       setState(() => _isLoading = true);
-      
+
       final stats = await StockService.getStockStats(widget.child.id!);
-      final scheduled = await StockService.getScheduledForToday(widget.child.id!);
+      final scheduled =
+          await StockService.getScheduledForToday(widget.child.id!);
       final overdue = await StockService.getOverdueChecklists(widget.child.id!);
-      final restock = await StockService.getItemsNeedingRestock(widget.child.id!);
-      
+      final restock =
+          await StockService.getItemsNeedingRestock(widget.child.id!);
+
       setState(() {
         _stats = stats;
         _scheduledChecklists = scheduled;
@@ -157,7 +159,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -182,7 +185,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
   }
 
   Widget _buildProgressIndicator() {
-    if (_stats == null || _stats!.totalItems == 0) return const SizedBox.shrink();
+    if (_stats == null || _stats!.totalItems == 0)
+      return const SizedBox.shrink();
 
     return Card(
       child: Padding(
@@ -208,8 +212,11 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
               value: _stats!.completionPercentage / 100.0,
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(
-                _stats!.completionPercentage >= 80 ? Colors.green : 
-                _stats!.completionPercentage >= 50 ? Colors.orange : Colors.red,
+                _stats!.completionPercentage >= 80
+                    ? Colors.green
+                    : _stats!.completionPercentage >= 50
+                        ? Colors.orange
+                        : Colors.red,
               ),
             ),
           ],
@@ -234,7 +241,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
                 'Nouvelle checklist',
                 Icons.add_task,
                 Colors.blue,
-                () => context.push('/children/${widget.child.id}/stock/checklists/new'),
+                () => context
+                    .push('/children/${widget.child.id}/stock/checklists/new'),
               ),
             ),
             const SizedBox(width: 12),
@@ -256,7 +264,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
                 'Depuis éléments confort',
                 Icons.auto_awesome,
                 Colors.purple,
-                () => context.push('/children/${widget.child.id}/stock/checklists/from-comfort'),
+                () => context.push(
+                    '/children/${widget.child.id}/stock/checklists/from-comfort'),
               ),
             ),
             const SizedBox(width: 12),
@@ -265,7 +274,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
                 'Toutes les checklists',
                 Icons.list,
                 Colors.teal,
-                () => context.push('/children/${widget.child.id}/stock/checklists'),
+                () => context
+                    .push('/children/${widget.child.id}/stock/checklists'),
               ),
             ),
           ],
@@ -274,7 +284,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
     );
   }
 
-  Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionCard(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return Card(
       elevation: 2,
       child: InkWell(
@@ -309,16 +320,20 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
           children: [
             const Text(
               '⚠️ Checklists en retard',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             TextButton(
-              onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/overdue'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/stock/checklists/overdue'),
               child: const Text('Voir tout'),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        ..._overdueChecklists.take(3).map((checklist) => _buildChecklistCard(checklist, true)),
+        ..._overdueChecklists
+            .take(3)
+            .map((checklist) => _buildChecklistCard(checklist, true)),
       ],
     );
   }
@@ -337,13 +352,16 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/scheduled'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/stock/checklists/scheduled'),
               child: const Text('Voir tout'),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        ..._scheduledChecklists.take(3).map((checklist) => _buildChecklistCard(checklist, false)),
+        ..._scheduledChecklists
+            .take(3)
+            .map((checklist) => _buildChecklistCard(checklist, false)),
       ],
     );
   }
@@ -359,16 +377,22 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
           children: [
             const Text(
               '🛒 À réapprovisionner',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange),
             ),
             TextButton(
-              onPressed: () => context.push('/children/${widget.child.id}/stock/restock'),
+              onPressed: () =>
+                  context.push('/children/${widget.child.id}/stock/restock'),
               child: const Text('Voir tout'),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        ..._itemsNeedingRestock.take(5).map((item) => _buildRestockItemCard(item)),
+        ..._itemsNeedingRestock
+            .take(5)
+            .map((item) => _buildRestockItemCard(item)),
       ],
     );
   }
@@ -413,19 +437,20 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isOverdue)
-              const Icon(Icons.warning, color: Colors.red),
+            if (isOverdue) const Icon(Icons.warning, color: Colors.red),
             IconButton(
               icon: const Icon(Icons.check_circle_outline, color: Colors.green),
               onPressed: () => _completeChecklist(checklist),
             ),
             IconButton(
               icon: const Icon(Icons.visibility, color: Colors.blue),
-              onPressed: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/stock/checklists/${checklist.id}'),
             ),
           ],
         ),
-        onTap: () => context.push('/children/${widget.child.id}/stock/checklists/${checklist.id}'),
+        onTap: () => context.push(
+            '/children/${widget.child.id}/stock/checklists/${checklist.id}'),
       ),
     );
   }
@@ -443,7 +468,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
           ),
         ),
         title: Text(item.name),
-        subtitle: Text('Stock actuel: ${item.currentStock} ${item.unit} (minimum: ${item.minimumStock})'),
+        subtitle: Text(
+            'Stock actuel: ${item.currentStock} ${item.unit} (minimum: ${item.minimumStock})'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -470,7 +496,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
                 title: const Text('Nouvelle checklist'),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/children/${widget.child.id}/stock/checklists/new');
+                  context.push(
+                      '/children/${widget.child.id}/stock/checklists/new');
                 },
               ),
               ListTile(
@@ -478,7 +505,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
                 title: const Text('Depuis éléments de confort'),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/children/${widget.child.id}/stock/checklists/from-comfort');
+                  context.push(
+                      '/children/${widget.child.id}/stock/checklists/from-comfort');
                 },
               ),
               ListTile(
@@ -501,7 +529,8 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Vérification rapide'),
-        content: const Text('Cette fonctionnalité vous permettra de faire une vérification rapide des éléments essentiels.'),
+        content: const Text(
+            'Cette fonctionnalité vous permettra de faire une vérification rapide des éléments essentiels.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -554,11 +583,18 @@ class _StockDashboardScreenState extends State<StockDashboardScreen> {
 
   String _getFrequencyDisplayName(String frequency) {
     switch (frequency) {
-      case 'DAILY': return 'Quotidien';
-      case 'WEEKLY': return 'Hebdomadaire';
-      case 'MONTHLY': return 'Mensuel';
-      default: return frequency;
+      case 'DAILY':
+        return 'Quotidien';
+      case 'WEEKLY':
+        return 'Hebdomadaire';
+      case 'MONTHLY':
+        return 'Mensuel';
+      default:
+        return frequency;
     }
   }
 }
+
+
+
 

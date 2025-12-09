@@ -2,6 +2,7 @@ class Child {
   final int id;
   final String name;
   final int age;
+  final String? email;
   final List<ABAObservation>? observations;
   final List<String>? authorizedProfessionalEmails;
 
@@ -9,6 +10,7 @@ class Child {
     required this.id,
     required this.name,
     required this.age,
+    this.email,
     this.observations,
     this.authorizedProfessionalEmails,
   });
@@ -18,6 +20,7 @@ class Child {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       age: json['age'] ?? 0,
+      email: json['email'],
       observations: json['observations'] != null
           ? (json['observations'] as List)
               .map((obs) => ABAObservation.fromJson(obs))
@@ -89,6 +92,12 @@ class ABAObservation {
     };
   }
 }
+
+
+
+
+
+
 
 
 

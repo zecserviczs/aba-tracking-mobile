@@ -55,12 +55,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final userType = prefs.getString('userType');
       
       if (token != null && userType != null) {
-        final user = await ApiService.getCurrentUser(userType: userType);
-        state = state.copyWith(
-          user: user,
-          isAuthenticated: true,
-          isLoading: false,
-        );
+        // Pour les enfants, on ne charge pas les données utilisateur de la même façon
+        if (userType == 'child') {
+          state = state.copyWith(
+            isAuthenticated: true,
+            isLoading: false,
+          );
+        } else {
+          final user = await ApiService.getCurrentUser(userType: userType);
+          state = state.copyWith(
+            user: user,
+            isAuthenticated: true,
+            isLoading: false,
+          );
+        }
       } else {
         state = state.copyWith(
           isAuthenticated: false,
@@ -95,13 +103,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('userType', userType);
       
-      final user = await ApiService.getCurrentUser(userType: userType);
-      
-      state = state.copyWith(
-        user: user,
-        isAuthenticated: true,
-        isLoading: false,
-      );
+      // Pour les enfants, on ne charge pas les données utilisateur de la même façon
+      if (userType == 'child') {
+        state = state.copyWith(
+          isAuthenticated: true,
+          isLoading: false,
+        );
+      } else {
+        final user = await ApiService.getCurrentUser(userType: userType);
+        state = state.copyWith(
+          user: user,
+          isAuthenticated: true,
+          isLoading: false,
+        );
+      }
       
       // Mettre à jour le thème selon le type d'utilisateur
       _ref.read(themeProvider.notifier).updateThemeForUserType(userType);
@@ -109,6 +124,51 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return true;
     } catch (e) {
       _logger.e('Login error: $e');
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> loginWithGoogle({
+    required String idToken,
+    required String userType,
+  }) async {
+    state = state.copyWith(isLoading: true, error: null);
+    
+    try {
+      final response = await ApiService.loginWithGoogle(
+        idToken: idToken,
+        userType: userType,
+      );
+      
+      // Stocker le type d'utilisateur
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userType', userType);
+      
+      // Pour les enfants, on ne charge pas les données utilisateur de la même façon
+      if (userType == 'child') {
+        state = state.copyWith(
+          isAuthenticated: true,
+          isLoading: false,
+        );
+      } else {
+        final user = await ApiService.getCurrentUser(userType: userType);
+        state = state.copyWith(
+          user: user,
+          isAuthenticated: true,
+          isLoading: false,
+        );
+      }
+      
+      // Mettre à jour le thème selon le type d'utilisateur
+      _ref.read(themeProvider.notifier).updateThemeForUserType(userType);
+      
+      return true;
+    } catch (e) {
+      _logger.e('Google login error: $e');
       state = state.copyWith(
         error: e.toString(),
         isLoading: false,

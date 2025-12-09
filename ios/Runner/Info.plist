@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Google Sign-In Configuration -->
+	<!-- Remplacez YOUR_REVERSED_CLIENT_ID par votre Client ID inversé (sans .apps.googleusercontent.com) -->
+	<!-- Exemple: Si Client ID = 123456-abc.apps.googleusercontent.com, alors REVERSED = com.googleusercontent.apps.123456-abc -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- TODO: Remplacez par votre Client ID inversé depuis GoogleConfig.iosClientId -->
+				<!-- <string>com.googleusercontent.apps.YOUR_REVERSED_CLIENT_ID</string> -->
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -8,7 +8,7 @@ import '../widgets/app_drawer.dart';
 
 class RAGChatScreen extends ConsumerStatefulWidget {
   final int? childId;
-  
+
   const RAGChatScreen({super.key, this.childId});
 
   @override
@@ -38,7 +38,8 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
 
   void _addWelcomeMessage() {
     _messages.add(ChatMessage(
-      text: "Bonjour ! Je suis votre assistant IA spécialisé en ABA. Comment puis-je vous aider aujourd'hui ?",
+      text:
+          "Bonjour ! Je suis votre assistant IA spécialisé en ABA. Comment puis-je vous aider aujourd'hui ?",
       isUser: false,
       timestamp: DateTime.now(),
     ));
@@ -85,11 +86,11 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
         ));
         _isLoading = false;
       });
-
     } catch (e) {
       setState(() {
         _messages.add(ChatMessage(
-          text: "Désolé, je rencontre une erreur technique. Veuillez réessayer plus tard.\n\nErreur: $e",
+          text:
+              "Désolé, je rencontre une erreur technique. Veuillez réessayer plus tard.\n\nErreur: $e",
           isUser: false,
           timestamp: DateTime.now(),
           isError: true,
@@ -124,102 +125,125 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
             fontSize: 20,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.info_outline),
             onPressed: _showInfoDialog,
             tooltip: 'Informations',
+            color: Colors.white,
           ),
         ],
       ),
       drawer: AppDrawer(),
-      body: Column(
-        children: [
-          // Zone de messages
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return _buildMessageBubble(message);
-              },
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF667eea),
+              Color(0xFF764ba2),
+              Color(0xFFf093fb),
+            ],
           ),
-          
-          // Indicateur de chargement
-          if (_isLoading)
+        ),
+        child: Column(
+          children: [
+            // Zone de messages
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(16),
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  return _buildMessageBubble(message);
+                },
+              ),
+            ),
+
+            // Indicateur de chargement
+            if (_isLoading)
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: 12),
+                    Text('L\'assistant réfléchit...'),
+                  ],
+                ),
+              ),
+
+            // Zone de saisie
             Container(
               padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                  Expanded(
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: 'Posez votre question sur l\'ABA...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                      ),
+                      maxLines: null,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
                   ),
                   SizedBox(width: 12),
-                  Text('L\'assistant réfléchit...'),
+                  FloatingActionButton(
+                    onPressed: _isLoading ? null : _sendMessage,
+                    mini: true,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ),
-          
-          // Zone de saisie
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: Offset(0, -2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Posez votre question sur l\'ABA...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                    ),
-                    maxLines: null,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendMessage(),
-                  ),
-                ),
-                SizedBox(width: 12),
-                FloatingActionButton(
-                  onPressed: _isLoading ? null : _sendMessage,
-                  mini: true,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(
-                    Icons.send,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -228,9 +252,8 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: message.isUser 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!message.isUser) ...[
@@ -249,13 +272,13 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
             child: Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: message.isUser 
+                color: message.isUser
                     ? Theme.of(context).primaryColor
-                    : message.isError 
+                    : message.isError
                         ? Colors.red[50]
                         : Colors.grey[100],
                 borderRadius: BorderRadius.circular(16),
-                border: message.isError 
+                border: message.isError
                     ? Border.all(color: Colors.red[300]!)
                     : null,
               ),
@@ -265,15 +288,16 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
                   Text(
                     message.text,
                     style: TextStyle(
-                      color: message.isUser 
+                      color: message.isUser
                           ? Colors.white
-                          : message.isError 
+                          : message.isError
                               ? Colors.red[800]
                               : Colors.black87,
                       fontSize: 16,
                     ),
                   ),
-                  if (message.sources != null && message.sources!.isNotEmpty) ...[
+                  if (message.sources != null &&
+                      message.sources!.isNotEmpty) ...[
                     SizedBox(height: 8),
                     Text(
                       'Sources: ${message.sources!.join(', ')}',
@@ -334,7 +358,8 @@ class _RAGChatScreenState extends ConsumerState<RAGChatScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Cet assistant IA est spécialisé en Analyse Comportementale Appliquée (ABA).'),
+            Text(
+                'Cet assistant IA est spécialisé en Analyse Comportementale Appliquée (ABA).'),
             SizedBox(height: 12),
             Text('Il peut vous aider avec:'),
             SizedBox(height: 8),
@@ -385,5 +410,3 @@ class ChatMessage {
     this.isError = false,
   });
 }
-
-

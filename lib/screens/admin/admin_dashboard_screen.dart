@@ -70,7 +70,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       SizedBox(height: 16.h),
                       Text(
                         'Erreur de chargement',
-                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8.h),
                       Text(
@@ -126,7 +127,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           children: [
             Row(
               children: [
-                Icon(Icons.admin_panel_settings, color: Colors.white, size: 32.sp),
+                Icon(Icons.admin_panel_settings,
+                    color: Colors.white, size: 32.sp),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: Column(
@@ -182,13 +184,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           mainAxisSpacing: 12.h,
           childAspectRatio: 1.5,
           children: [
-            _buildStatCard('Utilisateurs', _stats!.totalUsers, Icons.people, Colors.blue),
-            _buildStatCard('Parents', _stats!.totalParents, Icons.family_restroom, Colors.green),
-            _buildStatCard('Professionnels', _stats!.totalProfessionals, Icons.medical_services, Colors.orange),
-            _buildStatCard('Enfants', _stats!.totalChildren, Icons.child_care, Colors.purple),
-            _buildStatCard('Observations', _stats!.totalObservations, Icons.visibility, Colors.teal),
-            _buildStatCard('Scénarios', _stats!.totalSocialScenarios, Icons.theater_comedy, Colors.indigo),
-            _buildStatCard('Connaissances', _stats!.totalKnowledgeBaseEntries, Icons.school, Colors.brown),
+            _buildStatCard(
+                'Utilisateurs', _stats!.totalUsers, Icons.people, Colors.blue),
+            _buildStatCard('Parents', _stats!.totalParents,
+                Icons.family_restroom, Colors.green),
+            _buildStatCard('Professionnels', _stats!.totalProfessionals,
+                Icons.medical_services, Colors.orange),
+            _buildStatCard('Enfants', _stats!.totalChildren, Icons.child_care,
+                Colors.purple),
+            _buildStatCard('Observations', _stats!.totalObservations,
+                Icons.visibility, Colors.teal),
+            _buildStatCard('Scénarios', _stats!.totalSocialScenarios,
+                Icons.theater_comedy, Colors.indigo),
+            _buildStatCard('Connaissances', _stats!.totalKnowledgeBaseEntries,
+                Icons.school, Colors.brown),
           ],
         ),
       ],
@@ -270,7 +279,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildActionButton(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -332,7 +342,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Colors.green,
           () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AdminKnowledgeScreen()),
+            MaterialPageRoute(
+                builder: (context) => const AdminKnowledgeScreen()),
           ),
         ),
         SizedBox(height: 12.h),
@@ -343,14 +354,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Colors.orange,
           () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AdminMonitoringScreen()),
+            MaterialPageRoute(
+                builder: (context) => const AdminMonitoringScreen()),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildNavigationCard(String title, String subtitle, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildNavigationCard(String title, String subtitle, IconData icon,
+      Color color, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -395,7 +408,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.grey.shade400, size: 16.sp),
+              Icon(Icons.arrow_forward_ios,
+                  color: Colors.grey.shade400, size: 16.sp),
             ],
           ),
         ),

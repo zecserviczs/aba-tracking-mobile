@@ -16,7 +16,8 @@ class RoutinesScreen extends StatefulWidget {
   State<RoutinesScreen> createState() => _RoutinesScreenState();
 }
 
-class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStateMixin {
+class _RoutinesScreenState extends State<RoutinesScreen>
+    with TickerProviderStateMixin {
   List<Routine> _routines = [];
   bool _isLoading = true;
   late TabController _tabController;
@@ -52,6 +53,10 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/children/${widget.child.id}/comfort'),
+        ),
         title: Text('Routines - ${widget.child.name}'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -82,7 +87,8 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/children/${widget.child.id}/comfort/routines/new'),
+        onPressed: () =>
+            context.push('/children/${widget.child.id}/comfort/routines/new'),
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
@@ -145,7 +151,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
 
   Widget _buildByTypeTab() {
     final groupedRoutines = <RoutineType, List<Routine>>{};
-    
+
     for (final routine in _routines) {
       groupedRoutines.putIfAbsent(routine.type, () => []).add(routine);
     }
@@ -167,7 +173,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
         itemBuilder: (context, index) {
           final type = groupedRoutines.keys.elementAt(index);
           final routines = groupedRoutines[type]!;
-          
+
           return Card(
             margin: const EdgeInsets.only(bottom: 16),
             child: ExpansionTile(
@@ -177,7 +183,9 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
               ),
               title: Text(type.displayName),
               subtitle: Text('${routines.length} routine(s)'),
-              children: routines.map((routine) => _buildRoutineTile(routine)).toList(),
+              children: routines
+                  .map((routine) => _buildRoutineTile(routine))
+                  .toList(),
             ),
           );
         },
@@ -234,7 +242,8 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
             ),
             IconButton(
               icon: const Icon(Icons.edit, color: Colors.blue),
-              onPressed: () => context.push('/children/${widget.child.id}/comfort/routines/${routine.id}/edit'),
+              onPressed: () => context.push(
+                  '/children/${widget.child.id}/comfort/routines/${routine.id}/edit'),
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
@@ -242,7 +251,8 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
             ),
           ],
         ),
-        onTap: () => context.push('/children/${widget.child.id}/comfort/routines/${routine.id}'),
+        onTap: () => context.push(
+            '/children/${widget.child.id}/comfort/routines/${routine.id}'),
       ),
     );
   }
@@ -257,9 +267,11 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
       subtitle: Text('${routine.scheduledTime} - Priorité ${routine.priority}'),
       trailing: IconButton(
         icon: const Icon(Icons.edit),
-        onPressed: () => context.push('/children/${widget.child.id}/comfort/routines/${routine.id}/edit'),
+        onPressed: () => context.push(
+            '/children/${widget.child.id}/comfort/routines/${routine.id}/edit'),
       ),
-      onTap: () => context.push('/children/${widget.child.id}/comfort/routines/${routine.id}'),
+      onTap: () => context
+          .push('/children/${widget.child.id}/comfort/routines/${routine.id}'),
     );
   }
 
@@ -268,10 +280,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
       await ComfortService.toggleRoutine(routine.id!);
       _loadRoutines();
       _showSuccessSnackBar(
-        routine.isActive 
-            ? 'Routine désactivée' 
-            : 'Routine activée'
-      );
+          routine.isActive ? 'Routine désactivée' : 'Routine activée');
     } catch (e) {
       _showErrorSnackBar('Erreur lors du changement d\'état: $e');
     }
@@ -282,7 +291,8 @@ class _RoutinesScreenState extends State<RoutinesScreen> with TickerProviderStat
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Supprimer la routine'),
-        content: Text('Êtes-vous sûr de vouloir supprimer la routine "${routine.name}" ?'),
+        content: Text(
+            'Êtes-vous sûr de vouloir supprimer la routine "${routine.name}" ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),

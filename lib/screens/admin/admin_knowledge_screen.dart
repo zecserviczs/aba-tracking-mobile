@@ -128,11 +128,21 @@ class _AdminKnowledgeScreenState extends State<AdminKnowledgeScreen> {
   Widget _buildKnowledgeList() {
     final filteredEntries = _searchTerm.isEmpty
         ? _knowledgeEntries
-        : _knowledgeEntries.where((entry) =>
-            entry.title.toLowerCase().contains(_searchTerm.toLowerCase()) ||
-            entry.content.toLowerCase().contains(_searchTerm.toLowerCase()) ||
-            (entry.category?.toLowerCase().contains(_searchTerm.toLowerCase()) ?? false) ||
-            (entry.keywords?.toLowerCase().contains(_searchTerm.toLowerCase()) ?? false)).toList();
+        : _knowledgeEntries
+            .where((entry) =>
+                entry.title.toLowerCase().contains(_searchTerm.toLowerCase()) ||
+                entry.content
+                    .toLowerCase()
+                    .contains(_searchTerm.toLowerCase()) ||
+                (entry.category
+                        ?.toLowerCase()
+                        .contains(_searchTerm.toLowerCase()) ??
+                    false) ||
+                (entry.keywords
+                        ?.toLowerCase()
+                        .contains(_searchTerm.toLowerCase()) ??
+                    false))
+            .toList();
 
     if (filteredEntries.isEmpty) {
       return Center(
@@ -142,7 +152,9 @@ class _AdminKnowledgeScreenState extends State<AdminKnowledgeScreen> {
             Icon(Icons.school_outlined, size: 64.sp, color: Colors.grey),
             SizedBox(height: 16.h),
             Text(
-              _searchTerm.isEmpty ? 'Aucune connaissance trouvée' : 'Aucun résultat pour "$_searchTerm"',
+              _searchTerm.isEmpty
+                  ? 'Aucune connaissance trouvée'
+                  : 'Aucun résultat pour "$_searchTerm"',
               style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
             ),
             if (_searchTerm.isEmpty) ...[
@@ -216,25 +228,31 @@ class _AdminKnowledgeScreenState extends State<AdminKnowledgeScreen> {
                 if (entry.keywords != null) ...[
                   Text(
                     'Mots-clés:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                   ),
                   SizedBox(height: 4.h),
                   Wrap(
                     spacing: 4.w,
-                    children: entry.keywords!.split(',').map((keyword) => Chip(
-                      label: Text(
-                        keyword.trim(),
-                        style: TextStyle(fontSize: 10.sp),
-                      ),
-                      backgroundColor: Colors.grey.shade200,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    )).toList(),
+                    children: entry.keywords!
+                        .split(',')
+                        .map((keyword) => Chip(
+                              label: Text(
+                                keyword.trim(),
+                                style: TextStyle(fontSize: 10.sp),
+                              ),
+                              backgroundColor: Colors.grey.shade200,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ))
+                        .toList(),
                   ),
                   SizedBox(height: 12.h),
                 ],
                 Text(
                   'Contenu:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                 ),
                 SizedBox(height: 4.h),
                 Text(
@@ -253,8 +271,10 @@ class _AdminKnowledgeScreenState extends State<AdminKnowledgeScreen> {
                     SizedBox(width: 8.w),
                     TextButton.icon(
                       onPressed: () => _deleteKnowledgeEntry(entry),
-                      icon: const Icon(Icons.delete, size: 16, color: Colors.red),
-                      label: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                      icon:
+                          const Icon(Icons.delete, size: 16, color: Colors.red),
+                      label: const Text('Supprimer',
+                          style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),
@@ -425,7 +445,9 @@ class _KnowledgeEntryDialogState extends State<KnowledgeEntryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.entry == null ? 'Ajouter une connaissance' : 'Modifier la connaissance'),
+      title: Text(widget.entry == null
+          ? 'Ajouter une connaissance'
+          : 'Modifier la connaissance'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -510,12 +532,16 @@ class _KnowledgeEntryDialogState extends State<KnowledgeEntryDialog> {
       id: widget.entry?.id,
       title: _titleController.text,
       content: _contentController.text,
-      category: _categoryController.text.isEmpty ? null : _categoryController.text,
-      keywords: _keywordsController.text.isEmpty ? null : _keywordsController.text,
+      category:
+          _categoryController.text.isEmpty ? null : _categoryController.text,
+      keywords:
+          _keywordsController.text.isEmpty ? null : _keywordsController.text,
     );
 
     widget.onSave(entry);
   }
 }
+
+
 
 

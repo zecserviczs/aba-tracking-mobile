@@ -7,12 +7,18 @@ import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../models/child_model.dart';
 import '../widgets/app_drawer.dart';
+import 'comfort/comfort_dashboard_flutter_screen.dart';
+import 'discomfort/discomfort_screen.dart';
+import 'planning/planning_screen.dart';
+import 'scenario_creation_screen.dart';
+import 'parent_wellness_screen.dart';
 
 class ParentDashboardScreen extends ConsumerStatefulWidget {
   const ParentDashboardScreen({super.key});
 
   @override
-  ConsumerState<ParentDashboardScreen> createState() => _ParentDashboardScreenState();
+  ConsumerState<ParentDashboardScreen> createState() =>
+      _ParentDashboardScreenState();
 }
 
 class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
@@ -35,7 +41,8 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userType = prefs.getString('userType');
-      final children = await ApiService.getAuthorizedChildren(userType: userType);
+      final children =
+          await ApiService.getAuthorizedChildren(userType: userType);
       setState(() {
         _children = children;
         _isLoading = false;
@@ -56,21 +63,30 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Dashboard Parent',
+          '🏠 Accueil',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 22,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: _loadAuthorizedChildren,
             tooltip: 'Actualiser',
+            color: Colors.white,
           ),
         ],
       ),
@@ -81,19 +97,13 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
-              Colors.white,
+              Color(0xFF667eea),
+              Color(0xFF764ba2),
+              Color(0xFFf093fb),
             ],
           ),
         ),
         child: _buildBody(),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/ai-analysis'),
-        icon: Icon(Icons.psychology),
-        label: Text('Analyse IA'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
       ),
     );
   }
@@ -154,166 +164,208 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // En-tête de bienvenue
+          // Hero Header avec salut
           Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Bienvenue !',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '👋 Bonjour',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black26,
+                            offset: Offset(2, 2),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Suivez le progrès de vos enfants avec l\'analyse ABA',
+                  'Bienvenue sur votre tableau de bord',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withOpacity(0.95),
                     fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-          
+
           SizedBox(height: 24),
-          
-          // Actions rapides
+
+          // Navigation Principale
           Text(
-            'Actions rapides',
+            '🎯 Navigation',
             style: TextStyle(
-              fontSize: 20,
+              color: Colors.white,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  offset: Offset(1, 1),
+                  blurRadius: 4,
+                ),
+              ],
             ),
           ),
           SizedBox(height: 16),
-          
-          Row(
-            children: [
-              Expanded(
-                child: _buildQuickActionCard(
-                  icon: Icons.psychology,
-                  title: 'Analyse IA',
-                  subtitle: 'Analyses avancées',
-                  onTap: () => context.go('/ai-analysis'),
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: _buildQuickActionCard(
-                  icon: Icons.auto_stories,
-                  title: 'Scénarios',
-                  subtitle: 'Scénarios sociaux',
-                  onTap: () => context.go('/social-scenarios'),
-                ),
-              ),
-            ],
+
+          _buildNavCard(
+            emoji: '👶',
+            title: 'Gérer mes enfants',
+            subtitle: 'Ajouter, modifier les profils',
+            gradient: [Color(0xFFec4899), Color(0xFFf472b6)],
+            onTap: () => context.go('/children'),
           ),
-          
           SizedBox(height: 12),
-          
-          Row(
-            children: [
-              Expanded(
-                child: _buildQuickActionCard(
-                  icon: Icons.chat,
-                  title: 'Assistant IA',
-                  subtitle: 'Chat ABA spécialisé',
-                  onTap: () => context.go('/rag-chat'),
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: _buildQuickActionCard(
-                  icon: Icons.subscriptions,
-                  title: 'Abonnements',
-                  subtitle: 'Gérer votre plan',
-                  onTap: () => context.go('/subscriptions'),
-                ),
-              ),
-            ],
+
+          _buildNavCard(
+            emoji: '📚',
+            title: 'Mes scénarios',
+            subtitle: 'Créer et gérer vos scénarios',
+            gradient: [Color(0xFF3b82f6), Color(0xFF60a5fa)],
+            onTap: () => context.go('/social-scenarios'),
           ),
-          
-          SizedBox(height: 24),
-          
-          // Liste des enfants
+          SizedBox(height: 12),
+
+          _buildNavCard(
+            emoji: '🤖',
+            title: 'Prévoir le comportement',
+            subtitle: 'Outils IA pour anticiper',
+            gradient: [Color(0xFFf97316), Color(0xFFfb923c)],
+            onTap: () => context.go('/rag-chat'),
+          ),
+          SizedBox(height: 12),
+
+          _buildNavCard(
+            emoji: '👨‍⚕️',
+            title: 'Inviter un professionnel',
+            subtitle: 'Partager l\'accès',
+            gradient: [Color(0xFF14b8a6), Color(0xFF5eead4)],
+            onTap: () {},
+          ),
+
+          SizedBox(height: 32),
+
+          // Section Mes Enfants
           Text(
-            'Mes enfants',
+            '🌟 Mes enfants',
             style: TextStyle(
-              fontSize: 20,
+              color: Colors.white,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  offset: Offset(1, 1),
+                  blurRadius: 4,
+                ),
+              ],
             ),
           ),
           SizedBox(height: 16),
-          
+
           ..._children.map((child) => _buildChildCard(child)),
+
+          SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActionCard({
-    required IconData icon,
+  Widget _buildNavCard({
+    required String emoji,
     required String title,
     required String subtitle,
+    required List<Color> gradient,
     required VoidCallback onTap,
   }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: gradient[0].withOpacity(0.3),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                size: 32,
-                color: Theme.of(context).primaryColor,
-              ),
-              SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      emoji,
+                      style: TextStyle(fontSize: 28),
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white.withOpacity(0.7),
+                  size: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -321,69 +373,179 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
   }
 
   Widget _buildChildCard(Child child) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: () => context.go('/observations/${child.id}'),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                child: Icon(
-                  Icons.child_care,
-                  color: Theme.of(context).primaryColor,
-                  size: 24,
-                ),
+      child: Column(
+        children: [
+          // Header avec gradient
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      child.name,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            padding: EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        child.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '${child.age} ans',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.5),
+                      width: 3,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      child.name[0].toUpperCase(),
                       style: TextStyle(
-                        fontSize: 18,
+                        color: Colors.white,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      '${child.age} ans',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+              ],
+            ),
+          ),
+
+          // Quick Actions Grid
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 4,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 0.85,
+              children: [
+                _buildQuickActionBtn(
+                  emoji: '🤖',
+                  label: 'IA',
+                  color: Color(0xFF0ea5e9),
+                  onTap: () => context.go('/ai-analysis/${child.id}'),
+                ),
+                _buildQuickActionBtn(
+                  emoji: '🏠',
+                  label: 'Confort',
+                  color: Color(0xFF22c55e),
+                  onTap: () => context.go(
+                      '/children/${child.id}/comfort?childName=${Uri.encodeComponent(child.name)}'),
+                ),
+                _buildQuickActionBtn(
+                  emoji: '⚠️',
+                  label: 'Inconforts',
+                  color: Color(0xFFef4444),
+                  onTap: () => context.go(
+                      '/children/${child.id}/discomfort?childName=${Uri.encodeComponent(child.name)}'),
+                ),
+                _buildQuickActionBtn(
+                  emoji: '📅',
+                  label: 'Planning',
+                  color: Color(0xFF8b5cf6),
+                  onTap: () => context.go(
+                      '/children/${child.id}/planning?childName=${Uri.encodeComponent(child.name)}'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionBtn({
+    required String emoji,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [color, color.withOpacity(0.8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                emoji,
+                style: TextStyle(fontSize: 28),
               ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.assignment),
-                    onPressed: () => context.go('/observations/${child.id}'),
-                    tooltip: 'Observations',
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.psychology),
-                    onPressed: () => context.go('/ai-analysis/${child.id}'),
-                    tooltip: 'Analyse IA',
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.favorite),
-                    onPressed: () => context.go('/children/${child.id}/comfort'),
-                    tooltip: 'Confort et routines',
-                  ),
-                ],
+              SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

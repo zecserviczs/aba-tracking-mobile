@@ -12,10 +12,12 @@ class ProfessionalDashboardScreen extends ConsumerStatefulWidget {
   const ProfessionalDashboardScreen({super.key});
 
   @override
-  ConsumerState<ProfessionalDashboardScreen> createState() => _ProfessionalDashboardScreenState();
+  ConsumerState<ProfessionalDashboardScreen> createState() =>
+      _ProfessionalDashboardScreenState();
 }
 
-class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashboardScreen> {
+class _ProfessionalDashboardScreenState
+    extends ConsumerState<ProfessionalDashboardScreen> {
   List<Child> _children = [];
   bool _isLoading = false;
 
@@ -31,7 +33,8 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
     });
 
     try {
-      final children = await ApiService.getAuthorizedChildren(userType: 'professionnel');
+      final children =
+          await ApiService.getAuthorizedChildren(userType: 'professionnel');
       setState(() {
         _children = children;
         _isLoading = false;
@@ -130,9 +133,9 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
                   ],
                 ),
               ),
-              
+
               SizedBox(height: 24),
-              
+
               // Actions rapides
               Text(
                 'Actions Rapides',
@@ -143,7 +146,7 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
                 ),
               ),
               SizedBox(height: 16),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -162,16 +165,17 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
                       context,
                       icon: Icons.assignment,
                       title: 'Mes Patients',
-                      subtitle: '${_children.length} patient${_children.length > 1 ? 's' : ''}',
+                      subtitle:
+                          '${_children.length} patient${_children.length > 1 ? 's' : ''}',
                       color: Colors.blue,
                       onTap: () => _showPatientsList(),
                     ),
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 24),
-              
+
               // Statistiques
               Text(
                 'Statistiques',
@@ -182,7 +186,7 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
                 ),
               ),
               SizedBox(height: 16),
-              
+
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -398,5 +402,7 @@ class _ProfessionalDashboardScreenState extends ConsumerState<ProfessionalDashbo
     );
   }
 }
+
+
 
 
